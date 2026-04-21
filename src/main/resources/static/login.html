@@ -39,7 +39,7 @@ function login() {
         return;
     }
 
-    fetch('window.location.origin/api/auth/login', {
+    fetch('${window.location.origin}/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })

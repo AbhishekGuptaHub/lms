@@ -48,7 +48,7 @@ function logout() {
 
 // Load pending leaves
 function loadLeaves() {
-    fetch('window.location.origin/api/leaves/pending')
+    fetch('${window.location.origin}/api/leaves/pending')
     .then(res => res.json())
     .then(data => {
         const table = document.getElementById("table");
@@ -85,7 +85,7 @@ function loadLeaves() {
 function review(id, action) {
     let remarks = prompt("Enter remarks:");
 
-    fetch(`window.location.origin/api/leaves/review/${id}?action=${action}&remarks=${remarks}`, {
+    fetch(`${window.location.origin}/api/leaves/review/${id}?action=${action}&remarks=${remarks}`, {
         method: 'POST'
     })
     .then(() => {
