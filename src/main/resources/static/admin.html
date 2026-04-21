@@ -3,6 +3,7 @@
 <head>
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
 </head>
 
 <body class="p-4">
@@ -47,7 +48,7 @@ function logout() {
 
 // Load pending leaves
 function loadLeaves() {
-    fetch('http://localhost:8080/api/leaves/pending')
+    fetch('window.location.origin/api/leaves/pending')
     .then(res => res.json())
     .then(data => {
         const table = document.getElementById("table");
@@ -84,7 +85,7 @@ function loadLeaves() {
 function review(id, action) {
     let remarks = prompt("Enter remarks:");
 
-    fetch(`http://localhost:8080/api/leaves/review/${id}?action=${action}&remarks=${remarks}`, {
+    fetch(`window.location.origin/api/leaves/review/${id}?action=${action}&remarks=${remarks}`, {
         method: 'POST'
     })
     .then(() => {
