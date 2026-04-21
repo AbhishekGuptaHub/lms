@@ -48,7 +48,7 @@ function logout() {
 
 // Load pending leaves
 function loadLeaves() {
-    fetch('${window.location.origin}/api/leaves/pending')
+    fetch(`${window.location.origin}/api/leaves/pending`)
     .then(res => res.json())
     .then(data => {
         const table = document.getElementById("table");
