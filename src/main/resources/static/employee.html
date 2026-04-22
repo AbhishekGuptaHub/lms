@@ -69,8 +69,8 @@ body.bg-dark select {
 
 let user = JSON.parse(localStorage.getItem("user"));
 
-if (!user || !user.username || user.role !== "ROLE_EMPLOYEE") {
-    localStorage.clear();
+if (!user) {
+    alert("Please login first");
     location.href = "login.html";
 }
 

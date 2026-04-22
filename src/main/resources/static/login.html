@@ -41,13 +41,6 @@ body.bg-dark .form-control { background:#2c2c2c; color:white; border:1px solid #
 
 <script>
 
-let user = JSON.parse(localStorage.getItem("user"));
-if (user && user.username) {
-    setTimeout(() => {
-        location.href = user.role === "ROLE_ADMIN" ? "admin.html" : "employee.html";
-    }, 300);
-}
-
 function login(){
 fetch(`${window.location.origin}/api/auth/login`,{
 method:'POST',
@@ -62,7 +55,12 @@ body:JSON.stringify({
     localStorage.setItem("user",JSON.stringify(d));
     location.href=d.role==="ROLE_ADMIN"?"admin.html":"employee.html";
 })
-.catch(()=>alert("Invalid login"));
+.catch(()=>alert("Invalid username or password"));
+}
+
+function logout(){
+    localStorage.removeItem("user");
+    location.href = "login.html";
 }
 
 function goRegister(){

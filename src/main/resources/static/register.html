@@ -48,30 +48,39 @@ body.bg-dark .form-control { background:#2c2c2c; color:white; border:1px solid #
 
 function register(){
 
-if(!username.value || !password.value){
-    alert("Username & Password required");
-    return;
+    if(!username.value || !password.value){
+        alert("Username & Password required");
+        return;
+    }
+
+    fetch(`${location.origin}/api/auth/register`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+            username:username.value,
+            password:password.value,
+            fullName:fullName.value,
+            email:email.value
+        })
+    })
+    .then(res => {
+        if(!res.ok){
+            return res.text().then(err => { throw new Error(err); });
+        }
+        return res.json();
+    })
+    .then(() => {
+        alert("Registered successfully");
+        location.href = "login.html";
+    })
+    .catch(err => {
+        alert("Registration failed: " + err.message);
+    });
 }
 
-fetch(`${window.location.origin}/api/auth/register`,{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
-    username:username.value,
-    password:password.value,
-    fullName:fullName.value,
-    email:email.value
-})
-})
-.then(res=>{
-    if(!res.ok) throw new Error();
-    return res.json();
-})
-.then(()=>{
-    alert("Registered successfully");
-    location.href="login.html";
-})
-.catch(()=>alert("Registration failed"));
+function logout(){
+    localStorage.removeItem("user");
+    location.href = "login.html";
 }
 
 // dark mode
