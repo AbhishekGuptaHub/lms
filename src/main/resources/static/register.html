@@ -66,8 +66,6 @@ localStorage.setItem("dark",document.body.classList.contains("bg-dark"));
 if(localStorage.getItem("dark")==="true"){
 document.body.classList.add("bg-dark","text-light");
 }
-
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
 </script>
 
 </body>

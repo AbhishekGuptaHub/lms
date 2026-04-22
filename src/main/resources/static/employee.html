@@ -50,7 +50,10 @@ body.bg-dark .table { color:white; }
 
 <script>
 let user=JSON.parse(localStorage.getItem("user"));
-if(!user||user.role!=="ROLE_EMPLOYEE")location.href="login.html";
+if (!user || !user.username || user.role !== "ROLE_EMPLOYEE") {
+  localStorage.clear();
+  window.location.href = "login.html";
+}
 
 function logout(){localStorage.clear();location.href="login.html"}
 
@@ -93,8 +96,6 @@ localStorage.setItem("dark",document.body.classList.contains("bg-dark"));
 if(localStorage.getItem("dark")==="true"){
 document.body.classList.add("bg-dark","text-light");
 }
-
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
 </script>
 
 </body>

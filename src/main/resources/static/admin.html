@@ -58,7 +58,10 @@ body.bg-dark .table { color:white; }
 <script>
 
 let user = JSON.parse(localStorage.getItem("user"));
-if (!user || user.role !== "ROLE_ADMIN") location.href = "login.html";
+if (!user || !user.username || user.role !== "ROLE_ADMIN") {
+  localStorage.clear();
+  window.location.href = "login.html";
+}
 
 function logout() {
     localStorage.clear();
@@ -153,11 +156,6 @@ function loadBalance() {
     })
     .catch(() => alert("User not found or error"));
 }
-
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
-}
-
 </script>
 
 </body>
