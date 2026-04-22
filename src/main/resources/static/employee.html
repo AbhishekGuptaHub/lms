@@ -80,7 +80,7 @@ function logout(){
 }
 
 function applyLeave(){
-fetch(`${location.origin}/api/leaves/apply`,{
+fetch(`${window.location.origin}/api/leaves/apply`,{
 method:'POST',
 headers:{'Content-Type':'application/json'},
 body:JSON.stringify({
@@ -98,7 +98,7 @@ body:JSON.stringify({
 }
 
 function loadHistory(){
-fetch(`${location.origin}/api/leaves/my?username=${user.username}`)
+fetch(`${window.location.origin}/api/leaves/my?username=${user.username}`)
 .then(r=>r.json())
 .then(data=>{
     table.innerHTML="";

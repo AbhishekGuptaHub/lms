@@ -73,7 +73,7 @@ function logout() {
 }
 
 function loadLeaves() {
-    fetch(`${location.origin}/api/leaves/pending`)
+    fetch(`${window.location.origin}/api/leaves/pending`)
     .then(r => r.json())
     .then(data => {
         table.innerHTML = "";
@@ -96,7 +96,7 @@ function loadLeaves() {
 
 function review(id, action) {
     let remarks = prompt("Remarks");
-    fetch(`${location.origin}/api/leaves/review/${id}?action=${action}&remarks=${remarks}`, {
+    fetch(`${window.location.origin}/api/leaves/review/${id}?action=${action}&remarks=${remarks}`, {
         method: 'POST'
     }).then(() => loadLeaves());
 }
@@ -113,7 +113,7 @@ function loadBalance() {
         return;
     }
 
-    fetch(`${location.origin}/api/leaves/balance?username=${username}`)
+    fetch(`${window.location.origin}/api/leaves/balance?username=${username}`)
     .then(res => res.json())
     .then(data => {
 

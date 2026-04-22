@@ -53,7 +53,7 @@ if(!username.value || !password.value){
     return;
 }
 
-fetch(`${location.origin}/api/auth/register`,{
+fetch(`${window.location.origin}/api/auth/register`,{
 method:'POST',
 headers:{'Content-Type':'application/json'},
 body:JSON.stringify({
