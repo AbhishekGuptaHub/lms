@@ -2,32 +2,34 @@
 <html>
 <head>
     <title>LMS Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0d6efd">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="manifest" href="/manifest.json">
 </head>
 
-<body class="bg-light d-flex justify-content-center align-items-center" style="height:100vh;">
+<body class="bg-light d-flex align-items-center" style="min-height:100vh;">
 
-<div class="card p-4 shadow" style="width:320px;">
-    <h4 class="text-center mb-3">LMS Login</h4>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-5 col-lg-4">
+            <div class="card p-4 shadow">
+                <h4 class="text-center mb-3">LMS Login</h4>
 
-    <input class="form-control mb-2" type="text" id="username" placeholder="Username">
-    <input class="form-control mb-3" type="password" id="password" placeholder="Password">
+                <input class="form-control mb-3" type="text" id="username" placeholder="Username">
+                <input class="form-control mb-3" type="password" id="password" placeholder="Password">
 
-    <button class="btn btn-primary w-100" onclick="login()">Login</button>
-    <button class="btn btn-secondary w-100 mt-2" onclick="goRegister()">Register</button>
+                <button class="btn btn-primary w-100 py-2" onclick="login()">Login</button>
+                <button class="btn btn-secondary w-100 mt-2 py-2" onclick="goRegister()">Register</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-
-// 🔥 Auto redirect if already logged in
 let user = JSON.parse(localStorage.getItem("user"));
 if (user) {
-    if (user.role === "ROLE_ADMIN") {
-        window.location.href = "admin.html";
-    } else {
-        window.location.href = "employee.html";
-    }
+    window.location.href = user.role === "ROLE_ADMIN" ? "admin.html" : "employee.html";
 }
 
 function login() {
@@ -44,30 +46,19 @@ function login() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
     })
-    .then(res => {
-        if (!res.ok) throw new Error();
-        return res.json();
-    })
+    .then(res => res.json())
     .then(data => {
         localStorage.setItem("user", JSON.stringify(data));
-
-        if (data.role === "ROLE_ADMIN") {
-            window.location.href = "admin.html";
-        } else {
-            window.location.href = "employee.html";
-        }
+        window.location.href = data.role === "ROLE_ADMIN" ? "admin.html" : "employee.html";
     })
-    .catch(() => alert("Invalid username or password"));
+    .catch(() => alert("Invalid credentials"));
 }
 
 function goRegister() {
     window.location.href = "register.html";
 }
 
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-}
-
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
 </script>
 
 </body>
