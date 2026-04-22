@@ -49,6 +49,7 @@ body.bg-dark input { background:#2c2c2c; color:white; border:1px solid #444; }
 <th>User</th>
 <th>Type</th>
 <th>Days</th>
+<th>Reason </th>
 <th>Action</th>
 </tr>
 </thead>
@@ -86,8 +87,8 @@ function loadLeaves() {
                 <td>${l.leaveType}</td>
                 <td>${l.totalDays}</td>
                 <td>
-                    <button class="btn btn-success btn-sm" onclick="review(${l.id},'APPROVED')">✔</button>
-                    <button class="btn btn-danger btn-sm" onclick="review(${l.id},'REJECTED')">✖</button>
+                    <button class="btn btn-success btn-sm" onclick="review(${l.id},'APPROVED')">Approve</button>
+                    <button class="btn btn-danger btn-sm" onclick="review(${l.id},'REJECTED')">Reject</button>
                 </td>
             </tr>`;
         });
