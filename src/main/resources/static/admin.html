@@ -1,26 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0d6efd">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="manifest" href="/manifest.json">
+<title>Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="manifest" href="/manifest.json">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body.bg-dark .card { background:#1e1e1e; color:white; }
+body.bg-dark .table { color:white; }
+</style>
 </head>
 
 <body class="p-3">
 
 <div class="container">
 
+<!-- HEADER -->
 <div class="d-flex justify-content-between mb-3">
-    <h4>Admin</h4>
-    <div>
-        <span class="badge bg-primary">Welcome <span id="welcome"></span></span>
-        <button class="btn btn-danger btn-sm ms-2" onclick="logout()">Logout</button>
-    </div>
+<h5>Admin</h5>
+<div>
+<button class="btn btn-sm btn-outline-dark" onclick="toggleDark()">🌙</button>
+<button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+</div>
 </div>
 
-<button class="btn btn-primary w-100 mb-3" onclick="loadLeaves()">Load Pending Leaves</button>
+<div class="card p-3 mb-3">
+    <h6 class="mb-2">Employee Leave Balance</h6>
+
+    <input class="form-control mb-2" id="empUsername" placeholder="Enter username">
+
+    <button class="btn btn-primary w-100 mb-3" onclick="loadBalance()">Load Balance</button>
+
+    <canvas id="balanceChart" style="max-height:250px;"></canvas>
+</div>
+
+<button class="btn btn-primary w-100 mb-3" onclick="loadLeaves()">Load Leaves</button>
 
 <div class="table-responsive">
 <table class="table table-bordered">
@@ -40,42 +56,108 @@
 </div>
 
 <script>
+
 let user = JSON.parse(localStorage.getItem("user"));
-if (!user || user.role !== "ROLE_ADMIN") location.href="login.html";
-welcome.innerText=user.username;
+if (!user || user.role !== "ROLE_ADMIN") location.href = "login.html";
 
-function logout(){localStorage.clear();location.href="login.html"}
-
-function loadLeaves(){
-fetch(`${location.origin}/api/leaves/pending`)
-.then(r=>r.json())
-.then(data=>{
-table.innerHTML="";
-data.forEach(l=>{
-table.innerHTML+=`
-<tr>
-<td>${l.id}</td>
-<td>${l.user.username}</td>
-<td>${l.leaveType}</td>
-<td>${l.totalDays}</td>
-<td>
-<div class="d-flex flex-column gap-1">
-<button class="btn btn-success btn-sm" onclick="review(${l.id},'APPROVED')">Approve</button>
-<button class="btn btn-danger btn-sm" onclick="review(${l.id},'REJECTED')">Reject</button>
-</div>
-</td>
-</tr>`;
-});
-});
+function logout() {
+    localStorage.clear();
+    location.href = "login.html";
 }
 
-function review(id,action){
-let r=prompt("Remarks");
-fetch(`${location.origin}/api/leaves/review/${id}?action=${action}&remarks=${r}`,{method:'POST'})
-.then(()=>loadLeaves());
+function loadLeaves() {
+    fetch(`${location.origin}/api/leaves/pending`)
+    .then(r => r.json())
+    .then(d => {
+        table.innerHTML = "";
+
+        d.forEach(l => {
+            table.innerHTML += `
+            <tr>
+                <td>${l.id}</td>
+                <td>${l.user.username}</td>
+                <td>${l.leaveType}</td>
+                <td>${l.totalDays}</td>
+                <td>
+                    <button class="btn btn-success btn-sm" onclick="review(${l.id},'APPROVED')">✔</button>
+                    <button class="btn btn-danger btn-sm" onclick="review(${l.id},'REJECTED')">✖</button>
+                </td>
+            </tr>`;
+        });
+    });
 }
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+function review(id, action) {
+    let r = prompt("Remarks");
+    fetch(`${location.origin}/api/leaves/review/${id}?action=${action}&remarks=${r}`, {
+        method: 'POST'
+    }).then(() => loadLeaves());
+}
+
+function toggleDark() {
+    document.body.classList.toggle("bg-dark");
+    document.body.classList.toggle("text-light");
+    localStorage.setItem("dark", document.body.classList.contains("bg-dark"));
+}
+
+if (localStorage.getItem("dark") === "true") {
+    document.body.classList.add("bg-dark", "text-light");
+}
+
+let balanceChart;
+
+function loadBalance() {
+    let username = document.getElementById("empUsername").value;
+
+    if (!username) {
+        alert("Enter username");
+        return;
+    }
+
+    fetch(`${location.origin}/api/leaves/balance?username=${username}`)
+    .then(res => res.json())
+    .then(data => {
+
+        const labels = ['Casual', 'Sick', 'Annual'];
+
+        const used = [
+            data.casualUsed,
+            data.sickUsed,
+            data.annualUsed
+        ];
+
+        const remaining = [
+            data.casualTotal - data.casualUsed,
+            data.sickTotal - data.sickUsed,
+            data.annualTotal - data.annualUsed
+        ];
+
+        if (balanceChart) balanceChart.destroy();
+
+        balanceChart = new Chart(document.getElementById('balanceChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Used', data: used },
+                    { label: 'Remaining', data: remaining }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' }
+                }
+            }
+        });
+    })
+    .catch(() => alert("User not found or error"));
+}
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+}
+
 </script>
 
 </body>
